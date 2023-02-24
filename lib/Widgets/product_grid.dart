@@ -1,4 +1,4 @@
-import 'package:eshop/Models/Product.dart';
+import 'package:eshop/Providers/Product.dart';
 import 'package:eshop/Providers/Products.dart';
 import 'package:eshop/Widgets/productItem.dart';
 import 'package:flutter/material.dart';
@@ -16,10 +16,9 @@ class Product_grids extends StatelessWidget {
         crossAxisSpacing: 10,
         mainAxisSpacing: 10,
       ),
-      itemBuilder: (context, index) => ProductItem(
-        id: products[index].id,
-        title: products[index].title,
-        imageUrl: products[index].imageUrl,
+      itemBuilder: (context, index) => ChangeNotifierProvider(
+        create: (context) => products[index],
+        child: ProductItem(),
       ),
       itemCount: products.length,
       padding: const EdgeInsets.all(10),

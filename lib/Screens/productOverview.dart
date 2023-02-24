@@ -1,18 +1,14 @@
-import 'package:eshop/Models/Product.dart';
-import 'package:eshop/Widgets/productItem.dart';
+// ignore: file_names
 import 'package:eshop/Widgets/product_grid.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 
 class ProductOverviewScreen extends StatelessWidget {
-  ProductOverviewScreen({super.key});
-  final List<Product> loadedProducts = [];
+  const ProductOverviewScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Eshop")),
+      appBar: AppBar(title: const Text("Eshop")),
       body: Product_grids(),
     );
   }
