@@ -1,6 +1,9 @@
 // ignore: file_names
+import 'package:eshop/Providers/Cart.dart';
+import 'package:eshop/Widgets/budge.dart';
 import 'package:eshop/Widgets/product_grid.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class ProductOverviewScreen extends StatefulWidget {
   const ProductOverviewScreen({super.key});
@@ -40,6 +43,14 @@ class _ProductOverviewScreenState extends State<ProductOverviewScreen> {
               );
             },
           ),
+          Consumer<Cart>(
+            builder: (_, cart, ch) =>
+                Budge(value: cart.itemsCount.toString(), child: ch!),
+            child: IconButton(
+              icon: Icon(Icons.shopping_cart),
+              onPressed: () {},
+            ),
+          )
         ],
       ),
       body: Product_grids(favOrNot: _favOrNot),
