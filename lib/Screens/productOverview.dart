@@ -1,5 +1,6 @@
 // ignore: file_names
 import 'package:eshop/Providers/Cart.dart';
+import 'package:eshop/Screens/cartScreen.dart';
 import 'package:eshop/Widgets/budge.dart';
 import 'package:eshop/Widgets/product_grid.dart';
 import 'package:flutter/material.dart';
@@ -48,7 +49,9 @@ class _ProductOverviewScreenState extends State<ProductOverviewScreen> {
                 Budge(value: cart.itemsCount.toString(), child: ch!),
             child: IconButton(
               icon: Icon(Icons.shopping_cart),
-              onPressed: () {},
+              onPressed: () {
+                Navigator.of(context).pushNamed(CartScreen.routename);
+              },
             ),
           )
         ],
