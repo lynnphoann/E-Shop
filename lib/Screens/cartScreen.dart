@@ -1,7 +1,7 @@
-import 'package:eshop/Providers/Cart.dart';
+import 'package:eshop/Providers/Cart.dart' show Cart;
+import '../Widgets/cartItem.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
+
 import 'package:provider/provider.dart';
 
 class CartScreen extends StatelessWidget {
@@ -25,7 +25,7 @@ class CartScreen extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
+                  const Text(
                     "Total",
                     style: TextStyle(fontSize: 20),
                   ),
@@ -42,9 +42,29 @@ class CartScreen extends StatelessWidget {
                         ),
                       ),
                       backgroundColor: Colors.green),
-                  TextButton(onPressed: () {}, child: Text("ORDERNOW"))
+                  TextButton(
+                    onPressed: () {},
+                    child: const Text("ORDERNOW"),
+                  ),
                 ],
               ),
+            ),
+          ),
+          SizedBox(
+            height: 10,
+          ),
+          Expanded(
+            child: ListView.builder(
+              itemCount: cart.itemsCount,
+              itemBuilder: (context, index) {
+                return CardItem(
+                  productid: cart.items.keys.toList()[index],
+                  id: cart.items.values.toList()[index].id,
+                  price: cart.items.values.toList()[index].price,
+                  quantity: cart.items.values.toList()[index].quantity,
+                  title: cart.items.values.toList()[index].title,
+                );
+              },
             ),
           )
         ],

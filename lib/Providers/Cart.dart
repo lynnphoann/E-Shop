@@ -39,7 +39,7 @@ class Cart with ChangeNotifier {
         productId,
         (existingCartItem) => CartItem(
           id: existingCartItem.id,
-          title: existingCartItem.id,
+          title: existingCartItem.title,
           price: existingCartItem.price,
           quantity: existingCartItem.quantity + 1,
         ),
@@ -55,6 +55,12 @@ class Cart with ChangeNotifier {
         ),
       );
     }
+    notifyListeners();
+  }
+
+  // ignore: non_constant_identifier_names
+  void delete_item(String id) {
+    _items.remove(id);
     notifyListeners();
   }
 }
