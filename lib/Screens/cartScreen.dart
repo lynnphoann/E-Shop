@@ -19,6 +19,7 @@ class CartScreen extends StatelessWidget {
       body: Column(
         children: [
           Card(
+            elevation: 5,
             margin: EdgeInsets.all(15),
             child: Padding(
               padding: EdgeInsets.all(8),
@@ -32,7 +33,7 @@ class CartScreen extends StatelessWidget {
                   Spacer(),
                   Chip(
                       label: Text(
-                        "\$${cart.totalAmount}",
+                        "\$ ${cart.totalAmount}",
                         style: TextStyle(
                           color: Theme.of(context)
                               .primaryTextTheme
@@ -44,7 +45,12 @@ class CartScreen extends StatelessWidget {
                       backgroundColor: Colors.green),
                   TextButton(
                     onPressed: () {},
-                    child: const Text("ORDERNOW"),
+                    child: const Text(
+                      "ORDERNOW",
+                      style: TextStyle(
+                          color: Color.fromARGB(255, 69, 146, 72),
+                          fontWeight: FontWeight.bold),
+                    ),
                   ),
                 ],
               ),
