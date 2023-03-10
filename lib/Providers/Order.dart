@@ -1,16 +1,23 @@
-import 'package:eshop/Widgets/cartItem.dart';
+import 'package:eshop/Providers/Product.dart';
+import 'package:eshop/Providers/Products.dart';
 import 'package:flutter/material.dart';
+
+import 'package:eshop/Widgets/cardItem.dart';
+
+import '../Providers/Cart.dart';
 
 class OrderItem {
   final String id;
   final double amount;
-  final List<CardItem> products;
+  final List<CartItem> products;
   final DateTime dateTime;
+  // final String photoId;
   OrderItem({
     required this.id,
     required this.amount,
     required this.products,
     required this.dateTime,
+    // required this.photoId,
   });
 }
 
@@ -21,7 +28,8 @@ class Orders with ChangeNotifier {
     return [..._orders];
   }
 
-  void addOrder(List<CardItem> products, double total) {
+  void addOrder(List<CartItem> products, double total) {
+    String photoId = products.map((element) => element.id).toString();
     _orders.insert(
       0,
       OrderItem(
@@ -29,8 +37,10 @@ class Orders with ChangeNotifier {
         amount: total,
         products: products,
         dateTime: DateTime.now(),
+        // photoId: photoId,
       ),
     );
+    print(photoId);
     notifyListeners();
   }
 }

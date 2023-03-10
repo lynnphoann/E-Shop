@@ -1,6 +1,7 @@
 // ignore: file_names
 import 'package:eshop/Providers/Cart.dart';
 import 'package:eshop/Screens/cartScreen.dart';
+import 'package:eshop/Widgets/app_drawer.dart';
 import 'package:eshop/Widgets/budge.dart';
 import 'package:eshop/Widgets/product_grid.dart';
 import 'package:flutter/material.dart';
@@ -56,6 +57,7 @@ class _ProductOverviewScreenState extends State<ProductOverviewScreen> {
           )
         ],
       ),
+      drawer: AppDrawer(),
       body: Product_grids(favOrNot: _favOrNot),
     );
   }
