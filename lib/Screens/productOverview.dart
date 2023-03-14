@@ -57,7 +57,7 @@ class _ProductOverviewScreenState extends State<ProductOverviewScreen> {
           )
         ],
       ),
-      drawer: AppDrawer(),
+      drawer: const AppDrawer(),
       body: Product_grids(favOrNot: _favOrNot),
     );
   }

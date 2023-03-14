@@ -33,11 +33,12 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         title: 'Flutter Demo',
         theme: ThemeData(
+            textTheme: TextTheme(labelLarge: TextStyle(fontSize: 18)),
             appBarTheme: AppBarTheme(color: Colors.green),
             primaryColor: Colors.deepPurpleAccent,
             // ignore: deprecated_member_use
             accentColor: Colors.deepOrange,
-            fontFamily: 'lato'),
+            fontFamily: 'Lato'),
         home: ProductOverviewScreen(),
         routes: {
           ProductDetailsScreen.routeName: (context) => ProductDetailsScreen(),

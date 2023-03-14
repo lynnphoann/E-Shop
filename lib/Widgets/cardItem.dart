@@ -28,18 +28,18 @@ class CardItem extends StatelessWidget {
       key: ValueKey(id),
       background: Container(
         color: Theme.of(context).colorScheme.error,
-        child: Icon(
+        alignment: Alignment.centerRight,
+        margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+        child: const Icon(
           Icons.delete_outline_rounded,
           color: Colors.white,
           size: 35,
         ),
-        alignment: Alignment.centerRight,
-        margin: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
       ),
       child: Card(
-        margin: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+        margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
         child: Padding(
-          padding: EdgeInsets.symmetric(vertical: 10),
+          padding: const EdgeInsets.symmetric(vertical: 10),
           child: ListTile(
             leading: SizedBox(
               height: 50,
@@ -48,10 +48,10 @@ class CardItem extends StatelessWidget {
                 backgroundColor: Colors.green,
                 child: FittedBox(
                     child: Padding(
-                        padding: EdgeInsets.all(2),
+                        padding: const EdgeInsets.all(2),
                         child: Text(
                           "\$$price",
-                          style: TextStyle(color: Colors.white),
+                          style: const TextStyle(color: Colors.white),
                         ))),
               ),
             ),

@@ -1,7 +1,5 @@
 import 'package:eshop/Screens/orderScreen.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
 
 class AppDrawer extends StatelessWidget {
   const AppDrawer({super.key});
@@ -22,7 +20,7 @@ class AppDrawer extends StatelessWidget {
               Navigator.of(context).pushReplacementNamed("/");
             },
           ),
-          Divider(),
+          const Divider(),
           ListTile(
             leading: Icon(Icons.payment),
             title: Text("Order"),

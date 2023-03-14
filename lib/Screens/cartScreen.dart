@@ -56,7 +56,9 @@ class CartScreen extends StatelessWidget {
                       "ORDERNOW",
                       style: TextStyle(
                           color: Color.fromARGB(255, 69, 146, 72),
-                          fontWeight: FontWeight.bold),
+                          fontWeight: FontWeight.bold,
+                          fontSize: 15,
+                          fontFamily: 'Lato'),
                     ),
                   ),
                 ],
