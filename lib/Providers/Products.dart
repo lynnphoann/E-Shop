@@ -51,6 +51,16 @@ class Products with ChangeNotifier {
     return _items.firstWhere((element) => element.id == id);
   }
 
+  String getPhotoById(String id) {
+    for (int i = 0; i < _items.length; i++) {
+      if (_items[i].id == id) {
+        return _items[i].imageUrl;
+      }
+    }
+    notifyListeners();
+    return "nothing";
+  }
+
   void addProduct() {
     notifyListeners();
   }

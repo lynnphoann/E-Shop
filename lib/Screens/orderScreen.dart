@@ -1,8 +1,8 @@
-import 'package:eshop/Providers/Order.dart';
+import 'package:eshop/Providers/Order.dart' show Orders;
 import 'package:eshop/Widgets/app_drawer.dart';
+import 'package:eshop/Widgets/orderItem.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
+
 import 'package:provider/provider.dart';
 
 class OrderScreen extends StatelessWidget {
@@ -19,12 +19,7 @@ class OrderScreen extends StatelessWidget {
       body: ListView.builder(
         itemCount: OrderData.order.length,
         itemBuilder: (context, index) {
-          OrderItem(
-            id: OrderData.order[index].id,
-            amount: OrderData.order[index].amount,
-            products: OrderData.order[index].products,
-            dateTime: OrderData.order[index].dateTime,
-          );
+          return OrderItem(ordData: OrderData.order[index]);
         },
       ),
     );

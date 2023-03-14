@@ -49,7 +49,7 @@ class CartScreen extends StatelessWidget {
                     onPressed: () {
                       Provider.of<Orders>(context, listen: false).addOrder(
                           cart.items.values.toList(), cart.totalAmount);
-                      print(cart.items.values);
+
                       cart.clear();
                     },
                     child: const Text(

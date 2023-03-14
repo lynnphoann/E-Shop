@@ -5,11 +5,13 @@ class CartItem {
   final String title;
   final double price;
   final int quantity;
+  final String PId;
   CartItem({
     required this.id,
     required this.title,
     required this.price,
     required this.quantity,
+    required this.PId,
   });
 }
 
@@ -34,7 +36,6 @@ class Cart with ChangeNotifier {
 
   void addItem(String productId, double price, String title) {
     if (_items.containsKey(productId)) {
-      //...change quantity
       _items.update(
         productId,
         (existingCartItem) => CartItem(
@@ -42,6 +43,7 @@ class Cart with ChangeNotifier {
           title: existingCartItem.title,
           price: existingCartItem.price,
           quantity: existingCartItem.quantity + 1,
+          PId: productId,
         ),
       );
     } else {
@@ -52,6 +54,7 @@ class Cart with ChangeNotifier {
           title: title,
           price: price,
           quantity: 1,
+          PId: productId,
         ),
       );
     }
@@ -59,7 +62,6 @@ class Cart with ChangeNotifier {
     notifyListeners();
   }
 
-  // ignore: non_constant_identifier_names
   void delete_item(String id) {
     _items.remove(id);
     notifyListeners();

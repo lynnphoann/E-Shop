@@ -29,7 +29,6 @@ class Orders with ChangeNotifier {
   }
 
   void addOrder(List<CartItem> products, double total) {
-    String photoId = products.map((element) => element.id).toString();
     _orders.insert(
       0,
       OrderItem(
@@ -37,10 +36,9 @@ class Orders with ChangeNotifier {
         amount: total,
         products: products,
         dateTime: DateTime.now(),
-        // photoId: photoId,
       ),
     );
-    print(photoId);
+
     notifyListeners();
   }
 }
