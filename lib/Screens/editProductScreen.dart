@@ -1,8 +1,10 @@
 import 'package:eshop/Providers/Product.dart';
+import 'package:eshop/Providers/Products.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
+import 'package:provider/provider.dart';
 
 class EditProductScreen extends StatefulWidget {
   const EditProductScreen({super.key});
@@ -19,7 +21,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
   final _imageUrlFocusNode = FocusNode();
   final _formkey = GlobalKey<FormState>();
   var _editedProduct = Product(
-    id: '',
+    id: null,
     title: '',
     description: '',
     price: 0,
@@ -45,16 +47,22 @@ class _EditProductScreenState extends State<EditProductScreen> {
 
   void imageUrlLoseFocus() {
     if (!_imageUrlFocusNode.hasFocus) {
+      if ((!_imageUrlController.text.startsWith("http") &&
+          !_imageUrlController.text.startsWith("https"))) {
+        return;
+      }
       setState(() {});
     }
   }
 
   void _saveForm() {
-    _formkey.currentState!.save();
-    print(_editedProduct.title);
-    print(_editedProduct.price);
-    print(_editedProduct.description);
-    print(_editedProduct.imageUrl);
+    final _valid = _formkey.currentState!.validate();
+    if (_valid) {
+      _formkey.currentState!.save();
+      Provider.of<Products>(context, listen: false).addProduct(_editedProduct);
+      Navigator.of(context).pop();
+    }
+    return;
   }
 
   @override
@@ -95,6 +103,12 @@ class _EditProductScreenState extends State<EditProductScreen> {
                       imageUrl: _editedProduct.imageUrl,
                     );
                   },
+                  validator: (value) {
+                    if (value!.isEmpty || value == null) {
+                      return "Please put a title";
+                    }
+                    return null;
+                  },
                 ),
                 TextFormField(
                   decoration: InputDecoration(labelText: "Price"),
@@ -112,6 +126,18 @@ class _EditProductScreenState extends State<EditProductScreen> {
                       imageUrl: _editedProduct.imageUrl,
                     );
                   },
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return "Please enter a price";
+                    }
+                    if (double.tryParse(value) == null) {
+                      return "please enter a number";
+                    }
+                    if (double.parse(value) <= 0) {
+                      return "please enter a number greater than 0";
+                    }
+                    return null;
+                  },
                 ),
                 TextFormField(
                   decoration: InputDecoration(labelText: "Description"),
@@ -127,6 +153,15 @@ class _EditProductScreenState extends State<EditProductScreen> {
                       imageUrl: _editedProduct.imageUrl,
                     );
                   },
+                  validator: (value) {
+                    if (value!.isEmpty || value == null) {
+                      return "Please add some description";
+                    }
+                    if (value.length <= 10) {
+                      return "Your description is too short";
+                    }
+                    return null;
+                  },
                 ),
                 SizedBox(
                   height: 20,
@@ -140,16 +175,18 @@ class _EditProductScreenState extends State<EditProductScreen> {
                       decoration: BoxDecoration(
                         border: Border.all(color: Colors.black),
                       ),
-                      child: _imageUrlController.text.isEmpty
-                          ? const Center(
+                      child: _imageUrlController.text.isNotEmpty &&
+                              (_imageUrlController.text.startsWith("http") ||
+                                  _imageUrlController.text.startsWith("https"))
+                          ? Image.network(
+                              _imageUrlController.text,
+                              fit: BoxFit.cover,
+                            )
+                          : const Center(
                               child: Text(
                                 "Enter Url",
                                 textAlign: TextAlign.center,
                               ),
-                            )
-                          : Image.network(
-                              _imageUrlController.text,
-                              fit: BoxFit.cover,
                             ),
                     ),
                     Expanded(
@@ -164,7 +201,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                         focusNode: _imageUrlFocusNode,
                         controller: _imageUrlController,
                         onFieldSubmitted: (_) {
-                          _saveForm();
+                          setState(() {});
                         },
                         onSaved: (newValue) {
                           _editedProduct = Product(
@@ -174,6 +211,21 @@ class _EditProductScreenState extends State<EditProductScreen> {
                             price: _editedProduct.price,
                             imageUrl: newValue!,
                           );
+                        },
+                        validator: (value) {
+                          if (value!.isEmpty || value == null) {
+                            return "please add Image Url";
+                          }
+                          if (!value.startsWith("http") &&
+                              !value.startsWith("https")) {
+                            return "please enter valid Url";
+                          }
+                          // if (!value.endsWith(".jpg") &&
+                          //     !value.endsWith(".jpeg") &&
+                          //     !value.endsWith(".png")) {
+                          //   return "please enter image Url";
+                          // }
+                          return null;
                         },
                       ),
                     )
