@@ -2,13 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
 
+import 'package:eshop/Screens/editProductScreen.dart';
+
 class UserProductItem extends StatelessWidget {
   final String imageUrl;
   final String title;
+  final String id;
+  final String price;
   const UserProductItem({
     Key? key,
     required this.imageUrl,
     required this.title,
+    required this.id,
+    required this.price,
   }) : super(key: key);
 
   @override
@@ -19,12 +25,16 @@ class UserProductItem extends StatelessWidget {
         leading: CircleAvatar(
             backgroundImage: NetworkImage(imageUrl), maxRadius: 30.0),
         title: Text(title),
+        subtitle: Text("\$$price"),
         trailing: SizedBox(
           width: 100,
           child: Row(
             children: [
               IconButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.of(context)
+                      .pushNamed(EditProductScreen.routename, arguments: id);
+                },
                 icon: Icon(
                   Icons.edit,
                   color: Theme.of(context).primaryColor,
