@@ -80,7 +80,6 @@ class _EditProductScreenState extends State<EditProductScreen> {
         _imageUrlController.text = _editedProduct.imageUrl;
       } else {
         return;
-        // print("notnull");
       }
     }
     isInit = false;
@@ -207,7 +206,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                     return null;
                   },
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 20,
                 ),
                 Row(

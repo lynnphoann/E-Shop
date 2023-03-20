@@ -1,8 +1,11 @@
+import 'package:eshop/Providers/Product.dart';
+import 'package:eshop/Providers/Products.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
 
 import 'package:eshop/Screens/editProductScreen.dart';
+import 'package:provider/provider.dart';
 
 class UserProductItem extends StatelessWidget {
   final String imageUrl;
@@ -41,7 +44,10 @@ class UserProductItem extends StatelessWidget {
                 ),
               ),
               IconButton(
-                onPressed: () {},
+                onPressed: () {
+                  Provider.of<Products>(context, listen: false)
+                      .deleteProduct(id);
+                },
                 icon: Icon(
                   Icons.delete,
                   color: Theme.of(context).colorScheme.error,
