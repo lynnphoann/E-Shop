@@ -63,20 +63,19 @@ class Products with ChangeNotifier {
     return "nothing";
   }
 
-  void addProduct(Product product) {
+  Future<void> addProduct(Product product) {
     final url = Uri.parse(
         "https://eshop-f10b4-default-rtdb.firebaseio.com/products.json");
-    http
+    return http
         .post(url,
             body: json.encode({
               "title": product.title,
               "price": product.price,
               "description": product.description,
-              "imageUrl": product.id,
+              "imageUrl": product.imageUrl,
               "isFavorite": product.isfavorite,
             }))
         .then((response) {
-      print(json.decode(response.body)["name"]);
       final newProduct = Product(
         id: json.decode(response.body)["name"],
         title: product.title,
