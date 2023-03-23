@@ -1,5 +1,6 @@
 // ignore: file_names
 import 'package:eshop/Providers/Cart.dart';
+import 'package:eshop/Providers/Products.dart';
 import 'package:eshop/Screens/cartScreen.dart';
 import 'package:eshop/Widgets/app_drawer.dart';
 import 'package:eshop/Widgets/budge.dart';
@@ -16,6 +17,20 @@ class ProductOverviewScreen extends StatefulWidget {
 
 class _ProductOverviewScreenState extends State<ProductOverviewScreen> {
   bool _favOrNot = true;
+  bool _loadingScreen = false;
+  @override
+  void initState() {
+    setState(() {
+      _loadingScreen = true;
+    });
+    Provider.of<Products>(context, listen: false).fetchAndSet().then((_) {
+      return setState(() {
+        _loadingScreen = false;
+      });
+    });
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -58,7 +73,11 @@ class _ProductOverviewScreenState extends State<ProductOverviewScreen> {
         ],
       ),
       drawer: const AppDrawer(),
-      body: Product_grids(favOrNot: _favOrNot),
+      body: _loadingScreen
+          ? Center(
+              child: CircularProgressIndicator(),
+            )
+          : Product_grids(favOrNot: _favOrNot),
     );
   }
 }

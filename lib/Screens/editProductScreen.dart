@@ -87,9 +87,9 @@ class _EditProductScreenState extends State<EditProductScreen> {
     super.didChangeDependencies();
   }
 
-  void _saveForm() {
-    final _valid = _formkey.currentState!.validate();
-    if (_valid) {
+  Future<void> _saveForm() async {
+    final valid = _formkey.currentState!.validate();
+    if (valid) {
       _formkey.currentState!.save();
       setState(() {
         loadingScreen = true;
@@ -99,21 +99,37 @@ class _EditProductScreenState extends State<EditProductScreen> {
         Provider.of<Products>(context, listen: false)
             .updateProduct(_editedProduct.id!, _editedProduct);
         setState(() {
-          loadingScreen = true;
+          loadingScreen = false;
         });
         Navigator.of(context).pop();
       } else {
-        Provider.of<Products>(context, listen: false)
-            .addProduct(_editedProduct)
-            .then((_) {
+        try {
+          await Provider.of<Products>(context, listen: false)
+              .addProduct(_editedProduct);
+        } catch (error) {
+          await showDialog<void>(
+            context: context,
+            builder: (ctx) => AlertDialog(
+              title: Text("An error occured"),
+              content: Text("Something is Wrong"),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(ctx).pop();
+                  },
+                  child: Text("Continue"),
+                )
+              ],
+            ),
+          );
+        } finally {
           setState(() {
-            loadingScreen = true;
+            loadingScreen = false;
           });
           Navigator.of(context).pop();
-        });
+        }
       }
     }
-    return;
   }
 
   @override
