@@ -20,11 +20,12 @@ class ProductItem extends StatelessWidget {
               builder: (ctx, value, _) {
                 return IconButton(
                   color: Theme.of(context).colorScheme.secondary,
-                  icon: Icon(value.isfavorite
+                  icon: Icon(value.isFavorite
                       ? Icons.favorite
                       : Icons.favorite_border_outlined),
                   onPressed: () {
                     value.toggleFavorite();
+                    print(value.isFavorite);
                   },
                 );
               },
