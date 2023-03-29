@@ -5,9 +5,21 @@ import 'package:flutter/material.dart';
 
 import 'package:provider/provider.dart';
 
-class OrderScreen extends StatelessWidget {
+class OrderScreen extends StatefulWidget {
   const OrderScreen({super.key});
   static const routename = "/OrderScreen";
+
+  @override
+  State<OrderScreen> createState() => _OrderScreenState();
+}
+
+class _OrderScreenState extends State<OrderScreen> {
+  @override
+  void initState() {
+    Provider.of<Orders>(context, listen: false).fetchOrderData();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     final OrderData = Provider.of<Orders>(context);

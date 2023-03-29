@@ -45,22 +45,7 @@ class CartScreen extends StatelessWidget {
                         ),
                       ),
                       backgroundColor: Colors.green),
-                  TextButton(
-                    onPressed: () {
-                      Provider.of<Orders>(context, listen: false).addOrder(
-                          cart.items.values.toList(), cart.totalAmount);
-
-                      cart.clear();
-                    },
-                    child: const Text(
-                      "ORDERNOW",
-                      style: TextStyle(
-                          color: Color.fromARGB(255, 69, 146, 72),
-                          fontWeight: FontWeight.bold,
-                          fontSize: 15,
-                          fontFamily: 'Lato'),
-                    ),
-                  ),
+                  OrderButton(cart: cart),
                 ],
               ),
             ),
@@ -84,6 +69,58 @@ class CartScreen extends StatelessWidget {
           )
         ],
       ),
+    );
+  }
+}
+
+class OrderButton extends StatefulWidget {
+  const OrderButton({
+    super.key,
+    required this.cart,
+  });
+
+  final Cart cart;
+
+  @override
+  State<OrderButton> createState() => _OrderButtonState();
+}
+
+class _OrderButtonState extends State<OrderButton> {
+  bool _isLoading = false;
+  @override
+  Widget build(BuildContext context) {
+    return TextButton(
+      onPressed: (widget.cart.totalAmount <= 0)
+          ? null
+          : () async {
+              setState(() {
+                _isLoading = true;
+              });
+              await Provider.of<Orders>(context, listen: false)
+                  .addOrder(widget.cart.items.values.toList(),
+                      widget.cart.totalAmount)
+                  .then(
+                    (_) => widget.cart.clear(),
+                  );
+              setState(() {
+                _isLoading = false;
+              });
+            },
+      child: _isLoading
+          ? SizedBox(
+              height: 30,
+              width: 30,
+              child: const CircularProgressIndicator(
+                color: Colors.green,
+              ))
+          : const Text(
+              "ORDERNOW",
+              style: TextStyle(
+                  color: Color.fromARGB(255, 69, 146, 72),
+                  fontWeight: FontWeight.bold,
+                  fontSize: 15,
+                  fontFamily: 'Lato'),
+            ),
     );
   }
 }
