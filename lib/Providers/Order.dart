@@ -67,10 +67,7 @@ class Orders with ChangeNotifier {
       final response = await http.get(url);
       List<OrderItem> emptyCart = [];
       final networkData = json.decode(response.body) as Map<String, dynamic>;
-      print(networkData);
-      // if (networkData == null) {
-      //   return;
-      // }
+
       networkData.forEach((key, value) {
         emptyCart.insert(
           0,
