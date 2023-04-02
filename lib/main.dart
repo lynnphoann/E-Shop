@@ -1,6 +1,8 @@
 import 'package:eshop/Providers/Cart.dart';
 import 'package:eshop/Providers/Order.dart';
 import 'package:eshop/Providers/Products.dart';
+import 'package:eshop/Screens/LogInOutScreen.dart';
+import 'package:eshop/Screens/authScreen.dart';
 import 'package:eshop/Screens/cartScreen.dart';
 import 'package:eshop/Screens/editProductScreen.dart';
 import 'package:eshop/Screens/orderScreen.dart';
@@ -42,7 +44,7 @@ class MyApp extends StatelessWidget {
             // ignore: deprecated_member_use
             accentColor: Colors.deepOrange,
             fontFamily: 'Lato'),
-        home: ProductOverviewScreen(),
+        home: LogInOutScreen(switchForm: true),
         routes: {
           ProductDetailsScreen.routeName: (context) => ProductDetailsScreen(),
           CartScreen.routename: (context) => CartScreen(),
