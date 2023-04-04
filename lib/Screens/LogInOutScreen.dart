@@ -1,12 +1,14 @@
+import 'dart:io';
+
+import 'package:eshop/Providers/Auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class LogInOutScreen extends StatefulWidget {
-  final bool switchForm;
   const LogInOutScreen({
     Key? key,
-    required this.switchForm,
   }) : super(key: key);
-
+  static const routeName = "/LogInOutScreen";
   @override
   State<LogInOutScreen> createState() => _LogInOutScreenState();
 }
@@ -14,14 +16,37 @@ class LogInOutScreen extends StatefulWidget {
 class _LogInOutScreenState extends State<LogInOutScreen> {
   @override
   Widget build(BuildContext context) {
-    Map<String, String?> _authData = {
+    final bool switchForm = ModalRoute.of(context)!.settings.arguments as bool;
+
+    Map<String, String> _authData = {
       'email': '',
       'password': '',
     };
     final _passwordController = TextEditingController();
     final _FormKey = GlobalKey<FormState>();
     bool _isLoading = false;
-    void _submit() {
+
+    void _showDialog(String message) {
+      showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text('An Error Occurred!'),
+            content: Text(message),
+            actions: <Widget>[
+              TextButton(
+                child: Text('Okay'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              )
+            ],
+          );
+        },
+      );
+    }
+
+    Future<void> _submit() async {
       if (!_FormKey.currentState!.validate()) {
         // Invalid!
         return;
@@ -30,6 +55,30 @@ class _LogInOutScreenState extends State<LogInOutScreen> {
       setState(() {
         _isLoading = true;
       });
+      try {
+        if (switchForm) {
+          await Provider.of<Auth>(context, listen: false)
+              .signUp(_authData["email"]!, _authData["password"]!);
+        } else {
+          await Provider.of<Auth>(context, listen: false)
+              .signIn(_authData["email"]!, _authData["password"]!);
+        }
+      } catch (error) {
+        var errorMessage =
+            'Could not authenticate you. Please try again later.';
+        if (error.toString().contains('EMAIL_EXISTS')) {
+          errorMessage = 'This email address is already in use.';
+        } else if (error.toString().contains('INVALID_EMAIL')) {
+          errorMessage = 'This is not a valid email address';
+        } else if (error.toString().contains('WEAK_PASSWORD')) {
+          errorMessage = 'This password is too weak.';
+        } else if (error.toString().contains('EMAIL_NOT_FOUND')) {
+          errorMessage = 'Could not find a user with that email.';
+        } else if (error.toString().contains('INVALID_PASSWORD')) {
+          errorMessage = 'Invalid password.';
+        }
+        _showDialog(errorMessage);
+      }
 
       setState(() {
         _isLoading = false;
@@ -39,7 +88,9 @@ class _LogInOutScreenState extends State<LogInOutScreen> {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-            onPressed: () {},
+            onPressed: () {
+              return Navigator.of(context).pop();
+            },
             icon: const Icon(
               Icons.arrow_back_rounded,
               color: Colors.black,
@@ -65,7 +116,7 @@ class _LogInOutScreenState extends State<LogInOutScreen> {
                       ),
                       Center(
                         child: Text(
-                          (widget.switchForm) ? "Sign up" : "Sign In",
+                          (switchForm) ? "Sign up" : "Sign In",
                           style: const TextStyle(
                               fontSize: 40, fontWeight: FontWeight.bold),
                         ),
@@ -81,7 +132,7 @@ class _LogInOutScreenState extends State<LogInOutScreen> {
                           return null;
                         },
                         onSaved: (value) {
-                          _authData['email'] = value;
+                          _authData['email'] = value!;
                         },
                         decoration: CustomDecorationForm("Enter Your Email"),
                       ),
@@ -101,13 +152,13 @@ class _LogInOutScreenState extends State<LogInOutScreen> {
                             }
                           },
                           onSaved: (value) {
-                            _authData['password'] = value;
+                            _authData['password'] = value!;
                           },
                           decoration:
                               CustomDecorationForm("Enter your Password"),
                         ),
                       ),
-                      widget.switchForm
+                      switchForm
                           ? Padding(
                               padding: const EdgeInsets.only(top: 50),
                               child: TextFormField(
@@ -131,13 +182,14 @@ class _LogInOutScreenState extends State<LogInOutScreen> {
                             _submit();
                           },
                           style: ElevatedButton.styleFrom(
+                            elevation: 5,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(30),
                             ),
                             padding: const EdgeInsets.symmetric(vertical: 17),
-                            backgroundColor: Colors.green,
+                            backgroundColor: Color.fromARGB(255, 22, 166, 97),
                           ),
-                          child: Text(widget.switchForm ? "Create" : "Confirm"),
+                          child: Text(switchForm ? "Create" : "Confirm"),
                         ),
                       )
                     ],

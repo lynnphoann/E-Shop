@@ -17,7 +17,7 @@ class CustomLogBtn extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        actionOntap;
+        return actionOntap();
       },
       child: Material(
         borderRadius: BorderRadius.circular(10),

@@ -1,3 +1,4 @@
+import 'package:eshop/Providers/Auth.dart';
 import 'package:eshop/Providers/Cart.dart';
 import 'package:eshop/Providers/Order.dart';
 import 'package:eshop/Providers/Products.dart';
@@ -25,6 +26,9 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(
+          create: (context) => Auth(),
+        ),
+        ChangeNotifierProvider(
           create: (context) => Products(),
         ),
         ChangeNotifierProvider(
@@ -44,13 +48,14 @@ class MyApp extends StatelessWidget {
             // ignore: deprecated_member_use
             accentColor: Colors.deepOrange,
             fontFamily: 'Lato'),
-        home: LogInOutScreen(switchForm: true),
+        home: AuthScreen(),
         routes: {
           ProductDetailsScreen.routeName: (context) => ProductDetailsScreen(),
           CartScreen.routename: (context) => CartScreen(),
           OrderScreen.routename: (context) => OrderScreen(),
           UserProductScreen.routename: (context) => UserProductScreen(),
           EditProductScreen.routename: (context) => EditProductScreen(),
+          LogInOutScreen.routeName: (context) => LogInOutScreen()
         },
       ),
     );

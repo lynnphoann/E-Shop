@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:eshop/Screens/LogInOutScreen.dart';
 import 'package:eshop/Widgets/customLogBtn.dart';
 import 'package:flutter/material.dart';
 
@@ -19,7 +20,7 @@ class AuthScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Flexible(
+            const Flexible(
               child: Text(
                 "Welcome to E-Shop",
                 style: TextStyle(
@@ -36,7 +37,8 @@ class AuthScreen extends StatelessWidget {
             ),
             CustomLogBtn(
               actionOntap: () {
-                return print("something");
+                return Navigator.of(context)
+                    .pushNamed(LogInOutScreen.routeName, arguments: false);
               },
               btnColor: Color.fromARGB(255, 22, 166, 97),
               title: "Sign in",
@@ -47,7 +49,7 @@ class AuthScreen extends StatelessWidget {
               child: Row(
                 mainAxisSize: MainAxisSize.max,
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: [
+                children: const [
                   Expanded(
                     child: Divider(
                       thickness: 1,
@@ -68,7 +70,10 @@ class AuthScreen extends StatelessWidget {
               ),
             ),
             CustomLogBtn(
-              actionOntap: () {},
+              actionOntap: () {
+                return Navigator.of(context)
+                    .pushNamed(LogInOutScreen.routeName, arguments: true);
+              },
               btnColor: Colors.white,
               title: "Sign up",
               fontColor: Colors.black,
