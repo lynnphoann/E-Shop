@@ -18,16 +18,26 @@ class ProductOverviewScreen extends StatefulWidget {
 
 class _ProductOverviewScreenState extends State<ProductOverviewScreen> {
   bool _favOrNot = true;
-  bool _loadingScreen = false;
+  bool _loadingScreen = true;
+  bool _emptyListSwitch = true;
+
   @override
   void initState() {
-    setState(() {
-      _loadingScreen = true;
-    });
-    Provider.of<Products>(context, listen: false).fetchAndSet().then((_) {
-      return setState(() {
-        _loadingScreen = false;
-      });
+    Future.delayed(Duration.zero, () async {
+      try {
+        await Provider.of<Products>(context, listen: false)
+            .fetchAndSet()
+            .then((_) {
+          return setState(() {
+            _loadingScreen = false;
+          });
+        });
+      } catch (error) {
+        setState(() {
+          _loadingScreen = false;
+          _emptyListSwitch = false;
+        });
+      }
     });
     super.initState();
   }
@@ -78,7 +88,14 @@ class _ProductOverviewScreenState extends State<ProductOverviewScreen> {
           ? Center(
               child: CircularProgressIndicator(),
             )
-          : Product_grids(favOrNot: _favOrNot),
+          : _emptyListSwitch
+              ? Product_grids(favOrNot: _favOrNot)
+              : const Center(
+                  child: Text(
+                    "There is No Product",
+                    style: TextStyle(fontSize: 30),
+                  ),
+                ),
     );
   }
 }

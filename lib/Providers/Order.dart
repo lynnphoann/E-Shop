@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+
 import '../Providers/Cart.dart';
 
 class OrderItem {
@@ -19,15 +20,22 @@ class OrderItem {
 }
 
 class Orders with ChangeNotifier {
-  List<OrderItem> _orders = [];
+  List<OrderItem> emptyOrders = [];
+
+  final String? authToken;
+
+  Orders({
+    required this.emptyOrders,
+    this.authToken,
+  });
 
   List<OrderItem> get order {
-    return [..._orders];
+    return [...emptyOrders];
   }
 
   Future<void> addOrder(List<CartItem> products, double total) async {
     final url = Uri.parse(
-        "https://eshop-f10b4-default-rtdb.firebaseio.com/Orders.json");
+        "https://eshop-f10b4-default-rtdb.firebaseio.com/Orders.json?auth=$authToken");
     final timeStamp = DateTime.now();
     try {
       final response = await http.post(url,
@@ -44,7 +52,7 @@ class Orders with ChangeNotifier {
                     })
                 .toList()
           }));
-      _orders.insert(
+      emptyOrders.insert(
         0,
         OrderItem(
           id: json.decode(response.body)["name"],
@@ -62,7 +70,7 @@ class Orders with ChangeNotifier {
 
   Future<void> fetchOrderData() async {
     final url = Uri.parse(
-        "https://eshop-f10b4-default-rtdb.firebaseio.com/Orders.json");
+        "https://eshop-f10b4-default-rtdb.firebaseio.com/Orders.json?auth=$authToken");
     try {
       final response = await http.get(url);
       List<OrderItem> emptyCart = [];
@@ -87,7 +95,7 @@ class Orders with ChangeNotifier {
           ),
         );
       });
-      _orders = emptyCart;
+      emptyOrders = emptyCart;
       notifyListeners();
     } catch (error) {
       throw error.toString();

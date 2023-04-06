@@ -1,18 +1,24 @@
 import 'dart:convert';
 
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+
 import 'package:eshop/Models/httpexception.dart';
 
 import 'Product.dart';
-import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 
 class Products with ChangeNotifier {
   // ignore: prefer_final_fields
   List<Product> emptyItems = [];
 
   final String? authToken;
+  final String? userId;
 
-  Products({this.authToken, required this.emptyItems});
+  Products({
+    required this.emptyItems,
+    this.authToken,
+    this.userId,
+  });
 
   List<Product> get items {
     return [...emptyItems];
@@ -38,7 +44,7 @@ class Products with ChangeNotifier {
 
   Future<void> addProduct(Product product) async {
     final url = Uri.parse(
-        "https://eshop-f10b4-default-rtdb.firebaseio.com/products.json");
+        "https://eshop-f10b4-default-rtdb.firebaseio.com/products.json?auth=$authToken");
     try {
       final response = await http.post(url,
           body: json.encode({
@@ -61,8 +67,7 @@ class Products with ChangeNotifier {
       emptyItems.insert(0, newProduct);
       notifyListeners();
     } catch (error) {
-      print(error.toString());
-      throw error;
+      rethrow;
     }
   }
 
@@ -70,7 +75,7 @@ class Products with ChangeNotifier {
     final productIndex = emptyItems.indexWhere((element) => element.id == id);
     // if (productIndex >= 0) {
     final url = Uri.parse(
-        "https://eshop-f10b4-default-rtdb.firebaseio.com/products/$id.json");
+        "https://eshop-f10b4-default-rtdb.firebaseio.com/products/$id.json?auth=$authToken");
     await http.patch(url,
         body: json.encode({
           'title': upProduct.title,
@@ -88,7 +93,7 @@ class Products with ChangeNotifier {
 
   Future<void> deleteProduct(String id) async {
     final url = Uri.parse(
-        "https://eshop-f10b4-default-rtdb.firebaseio.com/products/$id.json");
+        "https://eshop-f10b4-default-rtdb.firebaseio.com/products/$id.json?auth=$authToken");
     final existingProductId =
         emptyItems.indexWhere((element) => element.id == id);
     Product? pointerProduct = emptyItems[existingProductId];
@@ -105,28 +110,34 @@ class Products with ChangeNotifier {
   }
 
   Future<void> fetchAndSet() async {
-    final url = Uri.parse(
+    var url = Uri.parse(
         "https://eshop-f10b4-default-rtdb.firebaseio.com/products.json?auth=$authToken");
 
     try {
       final response = await http.get(url);
       final jsonData = json.decode(response.body) as Map<String, dynamic>;
+      url = Uri.parse(
+          "https://eshop-f10b4-default-rtdb.firebaseio.com/userFavorites/$userId.json?auth=$authToken");
+      final userFavoriteRespone = await http.get(url);
+      final userFavoriteData = json.decode(userFavoriteRespone.body);
       List<Product> networkData = [];
       jsonData.forEach((key, value) {
         networkData.insert(
             0,
             Product(
-                id: key,
-                title: value["title"],
-                description: value["description"],
-                price: value["price"],
-                imageUrl: value["imageUrl"],
-                isFavorite: value["isFavorite"]));
+              id: key,
+              title: value["title"],
+              description: value["description"],
+              price: value["price"],
+              imageUrl: value["imageUrl"],
+              isFavorite: userFavoriteData == null
+                  ? false
+                  : userFavoriteData[key] ?? false,
+            ));
       });
       emptyItems = networkData;
       notifyListeners();
     } catch (error) {
-      print(error.toString());
       rethrow;
     }
   }

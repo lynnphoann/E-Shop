@@ -58,12 +58,14 @@ class _LogInOutScreenState extends State<LogInOutScreen> {
       try {
         if (switchForm) {
           await Provider.of<Auth>(context, listen: false)
-              .signUp(_authData["email"]!, _authData["password"]!);
+              .signUp(_authData["email"]!, _authData["password"]!)
+              .then((value) => Navigator.of(context)
+                  .pushReplacementNamed(ProductOverviewScreen.routeName));
         } else {
           await Provider.of<Auth>(context, listen: false)
-              .signIn(_authData["email"]!, _authData["password"]!);
-          Navigator.of(context)
-              .pushReplacementNamed(ProductOverviewScreen.routeName);
+              .signIn(_authData["email"]!, _authData["password"]!)
+              .then((value) => Navigator.of(context)
+                  .pushReplacementNamed(ProductOverviewScreen.routeName));
         }
       } catch (error) {
         var errorMessage =

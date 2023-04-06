@@ -11,8 +11,11 @@ class Auth with ChangeNotifier {
   String? _userId;
 
   bool get isAuth {
-    print(token != null);
     return token != null;
+  }
+
+  String? get userId {
+    return _userId;
   }
 
   String? get token {
@@ -41,15 +44,11 @@ class Auth with ChangeNotifier {
       if (responseData['error'] != null) {
         throw HttpException(responseData['error']['message']);
       }
-      print("this run");
       _token = responseData['idToken']!;
       _userId = responseData['localId']!;
       _expirtDate = DateTime.now()
           .add(Duration(seconds: int.parse(responseData['expiresIn'])));
       notifyListeners();
-      print(_token);
-      print(_userId);
-      print(_expirtDate);
     } catch (error) {
       rethrow;
     }

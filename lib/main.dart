@@ -31,15 +31,20 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProxyProvider<Auth, Products>(
           create: (context) => Products(emptyItems: []),
           update: (context, authData, previousProducts) => Products(
-              authToken: authData.token,
-              emptyItems:
-                  previousProducts == null ? [] : previousProducts.items),
+            authToken: authData.token,
+            emptyItems: previousProducts == null ? [] : previousProducts.items,
+            userId: authData.userId,
+          ),
         ),
         ChangeNotifierProvider(
           create: (context) => Cart(),
         ),
-        ChangeNotifierProvider(
-          create: (context) => Orders(),
+        ChangeNotifierProxyProvider<Auth, Orders>(
+          create: (context) => Orders(emptyOrders: []),
+          update: (context, authData, previousOrders) => Orders(
+            emptyOrders: previousOrders == null ? [] : previousOrders.order,
+            authToken: authData.token,
+          ),
         )
       ],
       child: Consumer<Auth>(

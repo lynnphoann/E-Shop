@@ -26,66 +26,69 @@ class _OrderItemState extends State<OrderItem> {
   Widget build(BuildContext context) {
     final productM = Provider.of<Products>(context);
 
-    return Card(
-      margin: EdgeInsets.all(10),
-      child: Column(
-        children: [
-          ListTile(
-            leading: const Text(
-              "Total Price:",
-              style: TextStyle(fontSize: 18),
+    return SingleChildScrollView(
+      child: Card(
+        margin: EdgeInsets.all(10),
+        child: Column(
+          children: [
+            ListTile(
+              leading: const Text(
+                "Total Price:",
+                style: TextStyle(fontSize: 18),
+              ),
+              title: Text("\$${widget.ordData.amount}"),
+              subtitle: Text(
+                DateFormat('dd/MM/yyyy hh:mm').format(widget.ordData.dateTime),
+              ),
+              trailing: IconButton(
+                icon: Icon(expanded ? Icons.expand_less : Icons.expand_more),
+                onPressed: () {
+                  setState(() {
+                    expanded = !expanded;
+                    dynamicHeigh =
+                        widget.ordData.products.length.toDouble() * 120;
+                  });
+                },
+              ),
             ),
-            title: Text("\$${widget.ordData.amount}"),
-            subtitle: Text(
-              DateFormat('dd/MM/yyyy hh:mm').format(widget.ordData.dateTime),
-            ),
-            trailing: IconButton(
-              icon: Icon(expanded ? Icons.expand_less : Icons.expand_more),
-              onPressed: () {
-                setState(() {
-                  expanded = !expanded;
-                  dynamicHeigh =
-                      widget.ordData.products.length.toDouble() * 120;
-                });
-              },
-            ),
-          ),
-          if (expanded)
-            Container(
-              height: dynamicHeigh,
-              child: ListView(
-                  children: widget.ordData.products
-                      .map((e) => Row(
-                            children: [
-                              Container(
-                                margin: EdgeInsets.all(8),
-                                height: 100,
-                                width: 100,
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(4),
-                                  child: Image.network(
-                                    productM.getPhotoById(e.PId),
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                              ),
-                              Expanded(
-                                child: ListTile(
-                                  title: Text(
-                                    e.title,
-                                    style: TextStyle(
-                                      fontSize: 18,
+            if (expanded)
+              Container(
+                height: dynamicHeigh,
+                child: ListView(
+                    physics: const NeverScrollableScrollPhysics(),
+                    children: widget.ordData.products
+                        .map((e) => Row(
+                              children: [
+                                Container(
+                                  margin: EdgeInsets.all(8),
+                                  height: 100,
+                                  width: 100,
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(4),
+                                    child: Image.network(
+                                      productM.getPhotoById(e.PId),
+                                      fit: BoxFit.cover,
                                     ),
                                   ),
-                                  subtitle: Text("${e.quantity}x"),
-                                  trailing: Text("\$${e.price * e.quantity}"),
                                 ),
-                              )
-                            ],
-                          ))
-                      .toList()),
-            )
-        ],
+                                Expanded(
+                                  child: ListTile(
+                                    title: Text(
+                                      e.title,
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                      ),
+                                    ),
+                                    subtitle: Text("${e.quantity}x"),
+                                    trailing: Text("\$${e.price * e.quantity}"),
+                                  ),
+                                )
+                              ],
+                            ))
+                        .toList()),
+              )
+          ],
+        ),
       ),
     );
   }
