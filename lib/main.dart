@@ -28,8 +28,12 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(
           create: (context) => Auth(),
         ),
-        ChangeNotifierProvider(
-          create: (context) => Products(),
+        ChangeNotifierProxyProvider<Auth, Products>(
+          create: (context) => Products(emptyItems: []),
+          update: (context, authData, previousProducts) => Products(
+              authToken: authData.token,
+              emptyItems:
+                  previousProducts == null ? [] : previousProducts.items),
         ),
         ChangeNotifierProvider(
           create: (context) => Cart(),
@@ -38,25 +42,29 @@ class MyApp extends StatelessWidget {
           create: (context) => Orders(),
         )
       ],
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: 'Flutter Demo',
-        theme: ThemeData(
-            textTheme: TextTheme(labelLarge: TextStyle(fontSize: 18)),
-            appBarTheme: AppBarTheme(color: Colors.green),
-            primaryColor: Colors.deepPurpleAccent,
-            // ignore: deprecated_member_use
-            accentColor: Colors.deepOrange,
-            fontFamily: 'Lato'),
-        home: AuthScreen(),
-        routes: {
-          ProductDetailsScreen.routeName: (context) => ProductDetailsScreen(),
-          CartScreen.routename: (context) => CartScreen(),
-          OrderScreen.routename: (context) => OrderScreen(),
-          UserProductScreen.routename: (context) => UserProductScreen(),
-          EditProductScreen.routename: (context) => EditProductScreen(),
-          LogInOutScreen.routeName: (context) => LogInOutScreen()
-        },
+      child: Consumer<Auth>(
+        builder: (context, AuthData, _) => MaterialApp(
+          debugShowCheckedModeBanner: false,
+          title: 'Flutter Demo',
+          theme: ThemeData(
+              textTheme: TextTheme(labelLarge: TextStyle(fontSize: 18)),
+              appBarTheme: AppBarTheme(color: Colors.green),
+              primaryColor: Colors.deepPurpleAccent,
+              // ignore: deprecated_member_use
+              accentColor: Colors.deepOrange,
+              fontFamily: 'Lato'),
+          home: AuthData.isAuth ? ProductOverviewScreen() : AuthScreen(),
+          routes: {
+            ProductDetailsScreen.routeName: (context) => ProductDetailsScreen(),
+            CartScreen.routename: (context) => CartScreen(),
+            OrderScreen.routename: (context) => OrderScreen(),
+            UserProductScreen.routename: (context) => UserProductScreen(),
+            EditProductScreen.routename: (context) => EditProductScreen(),
+            LogInOutScreen.routeName: (context) => LogInOutScreen(),
+            ProductOverviewScreen.routeName: (context) =>
+                ProductOverviewScreen(),
+          },
+        ),
       ),
     );
   }

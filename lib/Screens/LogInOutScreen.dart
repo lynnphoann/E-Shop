@@ -1,6 +1,6 @@
-import 'dart:io';
-
 import 'package:eshop/Providers/Auth.dart';
+import 'package:eshop/Screens/productDetails.dart';
+import 'package:eshop/Screens/productOverview.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -62,6 +62,8 @@ class _LogInOutScreenState extends State<LogInOutScreen> {
         } else {
           await Provider.of<Auth>(context, listen: false)
               .signIn(_authData["email"]!, _authData["password"]!);
+          Navigator.of(context)
+              .pushReplacementNamed(ProductOverviewScreen.routeName);
         }
       } catch (error) {
         var errorMessage =

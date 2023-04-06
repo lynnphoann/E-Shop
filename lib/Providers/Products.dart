@@ -8,24 +8,28 @@ import 'package:http/http.dart' as http;
 
 class Products with ChangeNotifier {
   // ignore: prefer_final_fields
-  List<Product> _items = [];
+  List<Product> emptyItems = [];
+
+  final String? authToken;
+
+  Products({this.authToken, required this.emptyItems});
 
   List<Product> get items {
-    return [..._items];
+    return [...emptyItems];
   }
 
   List<Product> get favoriteItems {
-    return _items.where((element) => element.isFavorite).toList();
+    return emptyItems.where((element) => element.isFavorite).toList();
   }
 
   Product findById(String id) {
-    return _items.firstWhere((element) => element.id == id);
+    return emptyItems.firstWhere((element) => element.id == id);
   }
 
   String getPhotoById(String id) {
-    for (int i = 0; i < _items.length; i++) {
-      if (_items[i].id == id) {
-        return _items[i].imageUrl;
+    for (int i = 0; i < emptyItems.length; i++) {
+      if (emptyItems[i].id == id) {
+        return emptyItems[i].imageUrl;
       }
     }
     notifyListeners();
@@ -53,8 +57,8 @@ class Products with ChangeNotifier {
         imageUrl: product.imageUrl,
         isFavorite: product.isFavorite,
       );
-      // _items.add(newProduct);
-      _items.insert(0, newProduct);
+      // emptyItems.add(newProduct);
+      emptyItems.insert(0, newProduct);
       notifyListeners();
     } catch (error) {
       print(error.toString());
@@ -63,7 +67,8 @@ class Products with ChangeNotifier {
   }
 
   Future<void> updateProduct(String id, Product upProduct) async {
-    final productIndex = _items.indexWhere((element) => element.id == id);
+    final productIndex = emptyItems.indexWhere((element) => element.id == id);
+    // if (productIndex >= 0) {
     final url = Uri.parse(
         "https://eshop-f10b4-default-rtdb.firebaseio.com/products/$id.json");
     await http.patch(url,
@@ -74,20 +79,24 @@ class Products with ChangeNotifier {
           'isFavorite': upProduct.isFavorite,
           'price': upProduct.price,
         }));
-    _items[productIndex] = upProduct;
+    emptyItems[productIndex] = upProduct;
     notifyListeners();
+    // } else {
+    //   print("...");
+    // }
   }
 
   Future<void> deleteProduct(String id) async {
     final url = Uri.parse(
         "https://eshop-f10b4-default-rtdb.firebaseio.com/products/$id.json");
-    final existingProductId = _items.indexWhere((element) => element.id == id);
-    Product? pointerProduct = _items[existingProductId];
-    _items.removeWhere((element) => element.id == id);
+    final existingProductId =
+        emptyItems.indexWhere((element) => element.id == id);
+    Product? pointerProduct = emptyItems[existingProductId];
+    emptyItems.removeWhere((element) => element.id == id);
     notifyListeners();
     final response = await http.delete(url);
     if (response.statusCode >= 400) {
-      _items.insert(existingProductId, pointerProduct);
+      emptyItems.insert(existingProductId, pointerProduct);
       notifyListeners();
       throw HttpException("Couldn't delete the product");
     }
@@ -97,7 +106,7 @@ class Products with ChangeNotifier {
 
   Future<void> fetchAndSet() async {
     final url = Uri.parse(
-        "https://eshop-f10b4-default-rtdb.firebaseio.com/products.json");
+        "https://eshop-f10b4-default-rtdb.firebaseio.com/products.json?auth=$authToken");
 
     try {
       final response = await http.get(url);
@@ -114,7 +123,7 @@ class Products with ChangeNotifier {
                 imageUrl: value["imageUrl"],
                 isFavorite: value["isFavorite"]));
       });
-      _items = networkData;
+      emptyItems = networkData;
       notifyListeners();
     } catch (error) {
       print(error.toString());

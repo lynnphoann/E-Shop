@@ -11,6 +11,7 @@ import 'package:provider/provider.dart';
 class ProductOverviewScreen extends StatefulWidget {
   const ProductOverviewScreen({super.key});
 
+  static const routeName = "/productOverviewScree";
   @override
   State<ProductOverviewScreen> createState() => _ProductOverviewScreenState();
 }
