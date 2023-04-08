@@ -72,4 +72,11 @@ class Auth with ChangeNotifier {
       "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyCK0mG_prgTIeIgl9vAUrpBDw_MlI9qCj0",
     );
   }
+
+  void logOut() {
+    _token = null;
+    _expirtDate = null;
+    _userId = null;
+    notifyListeners();
+  }
 }

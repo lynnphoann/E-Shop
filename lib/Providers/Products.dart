@@ -53,6 +53,7 @@ class Products with ChangeNotifier {
             "description": product.description,
             "imageUrl": product.imageUrl,
             "isFavorite": product.isFavorite,
+            "createrId": userId,
           }));
 
       final newProduct = Product(
@@ -109,9 +110,11 @@ class Products with ChangeNotifier {
     pointerProduct = null;
   }
 
-  Future<void> fetchAndSet() async {
+  Future<void> fetchAndSet([bool filterUser = false]) async {
+    String filterString =
+        filterUser ? 'orderBy="createrId"&equalTo="$userId"' : '';
     var url = Uri.parse(
-        "https://eshop-f10b4-default-rtdb.firebaseio.com/products.json?auth=$authToken");
+        'https://eshop-f10b4-default-rtdb.firebaseio.com/products.json?auth=$authToken&$filterString');
 
     try {
       final response = await http.get(url);

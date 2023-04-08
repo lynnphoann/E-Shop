@@ -2,6 +2,7 @@ import 'package:eshop/Providers/Auth.dart';
 import 'package:eshop/Screens/productDetails.dart';
 import 'package:eshop/Screens/productOverview.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/src/scheduler/binding.dart';
 import 'package:provider/provider.dart';
 
 class LogInOutScreen extends StatefulWidget {
@@ -14,9 +15,10 @@ class LogInOutScreen extends StatefulWidget {
 }
 
 class _LogInOutScreenState extends State<LogInOutScreen> {
+  bool _isLoading = true;
   @override
   Widget build(BuildContext context) {
-    final bool switchForm = ModalRoute.of(context)!.settings.arguments as bool;
+    final switchForm = ModalRoute.of(context)!.settings.arguments as bool;
 
     Map<String, String> _authData = {
       'email': '',
@@ -24,7 +26,6 @@ class _LogInOutScreenState extends State<LogInOutScreen> {
     };
     final _passwordController = TextEditingController();
     final _FormKey = GlobalKey<FormState>();
-    bool _isLoading = false;
 
     void _showDialog(String message) {
       showDialog(
@@ -52,9 +53,7 @@ class _LogInOutScreenState extends State<LogInOutScreen> {
         return;
       }
       _FormKey.currentState!.save();
-      setState(() {
-        _isLoading = true;
-      });
+
       try {
         if (switchForm) {
           await Provider.of<Auth>(context, listen: false)
@@ -83,10 +82,6 @@ class _LogInOutScreenState extends State<LogInOutScreen> {
         }
         _showDialog(errorMessage);
       }
-
-      setState(() {
-        _isLoading = false;
-      });
     }
 
     return Scaffold(
@@ -106,100 +101,105 @@ class _LogInOutScreenState extends State<LogInOutScreen> {
       ),
       body: Container(
         color: const Color.fromARGB(255, 245, 243, 243),
-        child: _isLoading
-            ? const CircularProgressIndicator()
-            : Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 50, vertical: 20),
-                child: Form(
-                  key: _FormKey,
-                  child: ListView(
-                    children: [
-                      const SizedBox(
-                        height: 80,
-                      ),
-                      Center(
-                        child: Text(
-                          (switchForm) ? "Sign up" : "Sign In",
-                          style: const TextStyle(
-                              fontSize: 40, fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 50,
-                      ),
-                      TextFormField(
-                        validator: (value) {
-                          if (value == null || !value.contains('@')) {
-                            return 'Invalid email!';
-                          }
-                          return null;
-                        },
-                        onSaved: (value) {
-                          _authData['email'] = value!;
-                        },
-                        decoration: CustomDecorationForm("Enter Your Email"),
-                      ),
-                      const SizedBox(
-                        height: 50,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                          vertical: 3,
-                        ),
-                        child: TextFormField(
-                          obscureText: true,
-                          controller: _passwordController,
-                          validator: (value) {
-                            if (value == null || value.length < 5) {
-                              return 'Password is too short!';
-                            }
-                          },
-                          onSaved: (value) {
-                            _authData['password'] = value!;
-                          },
-                          decoration:
-                              CustomDecorationForm("Enter your Password"),
-                        ),
-                      ),
-                      switchForm
-                          ? Padding(
-                              padding: const EdgeInsets.only(top: 50),
-                              child: TextFormField(
-                                  obscureText: true,
-                                  validator: (value) {
-                                    if (value != _passwordController.text) {
-                                      return 'Passwords do not match!';
-                                    }
-                                  },
-                                  decoration: CustomDecorationForm(
-                                      "Confirm Your Password")),
-                            )
-                          : const SizedBox(),
-                      const SizedBox(
-                        height: 50,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 50),
-                        child: ElevatedButton(
-                          onPressed: () {
-                            _submit();
-                          },
-                          style: ElevatedButton.styleFrom(
-                            elevation: 5,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(30),
-                            ),
-                            padding: const EdgeInsets.symmetric(vertical: 17),
-                            backgroundColor: Color.fromARGB(255, 22, 166, 97),
-                          ),
-                          child: Text(switchForm ? "Create" : "Confirm"),
-                        ),
-                      )
-                    ],
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 20),
+          child: Form(
+            key: _FormKey,
+            child: ListView(
+              children: [
+                const SizedBox(
+                  height: 80,
+                ),
+                Center(
+                  child: Text(
+                    (switchForm) ? "Sign up" : "Sign In",
+                    style: const TextStyle(
+                        fontSize: 40, fontWeight: FontWeight.bold),
                   ),
                 ),
-              ),
+                const SizedBox(
+                  height: 50,
+                ),
+                TextFormField(
+                  validator: (value) {
+                    if (value == null || !value.contains('@')) {
+                      return 'Invalid email!';
+                    }
+                    return null;
+                  },
+                  onSaved: (value) {
+                    _authData['email'] = value!;
+                  },
+                  decoration: CustomDecorationForm("Enter Your Email"),
+                ),
+                const SizedBox(
+                  height: 50,
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 3,
+                  ),
+                  child: TextFormField(
+                    obscureText: true,
+                    controller: _passwordController,
+                    validator: (value) {
+                      if (value == null || value.length < 5) {
+                        return 'Password is too short!';
+                      }
+                    },
+                    onSaved: (value) {
+                      _authData['password'] = value!;
+                    },
+                    decoration: CustomDecorationForm("Enter your Password"),
+                  ),
+                ),
+                switchForm
+                    ? Padding(
+                        padding: const EdgeInsets.only(top: 50),
+                        child: TextFormField(
+                            obscureText: true,
+                            validator: (value) {
+                              if (value != _passwordController.text) {
+                                return 'Passwords do not match!';
+                              }
+                            },
+                            decoration:
+                                CustomDecorationForm("Confirm Your Password")),
+                      )
+                    : const SizedBox(),
+                const SizedBox(
+                  height: 50,
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 50),
+                  child: ElevatedButton(
+                    onPressed: () {
+                      _submit();
+                      setState(() {
+                        _isLoading = false;
+                      });
+                    },
+                    style: ElevatedButton.styleFrom(
+                      elevation: 5,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                      padding: const EdgeInsets.symmetric(vertical: 17),
+                      backgroundColor: Color.fromARGB(255, 22, 166, 97),
+                    ),
+                    child: _isLoading
+                        ? Text(switchForm ? "Create" : "Confirm")
+                        : SizedBox(
+                            height: 20,
+                            width: 20,
+                            child: const CircularProgressIndicator(
+                                color: Colors.greenAccent)),
+                  ),
+                )
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }

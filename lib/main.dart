@@ -44,6 +44,7 @@ class MyApp extends StatelessWidget {
           update: (context, authData, previousOrders) => Orders(
             emptyOrders: previousOrders == null ? [] : previousOrders.order,
             authToken: authData.token,
+            userId: authData.userId,
           ),
         )
       ],
@@ -68,6 +69,7 @@ class MyApp extends StatelessWidget {
             LogInOutScreen.routeName: (context) => LogInOutScreen(),
             ProductOverviewScreen.routeName: (context) =>
                 ProductOverviewScreen(),
+            AuthScreen.routeName: (context) => AuthScreen(),
           },
         ),
       ),

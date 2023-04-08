@@ -23,10 +23,12 @@ class Orders with ChangeNotifier {
   List<OrderItem> emptyOrders = [];
 
   final String? authToken;
+  final String? userId;
 
   Orders({
     required this.emptyOrders,
     this.authToken,
+    this.userId,
   });
 
   List<OrderItem> get order {
@@ -35,7 +37,7 @@ class Orders with ChangeNotifier {
 
   Future<void> addOrder(List<CartItem> products, double total) async {
     final url = Uri.parse(
-        "https://eshop-f10b4-default-rtdb.firebaseio.com/Orders.json?auth=$authToken");
+        "https://eshop-f10b4-default-rtdb.firebaseio.com/Orders/$userId.json?auth=$authToken");
     final timeStamp = DateTime.now();
     try {
       final response = await http.post(url,
@@ -70,11 +72,12 @@ class Orders with ChangeNotifier {
 
   Future<void> fetchOrderData() async {
     final url = Uri.parse(
-        "https://eshop-f10b4-default-rtdb.firebaseio.com/Orders.json?auth=$authToken");
+        "https://eshop-f10b4-default-rtdb.firebaseio.com/Orders/$userId.json?auth=$authToken");
     try {
       final response = await http.get(url);
       List<OrderItem> emptyCart = [];
       final networkData = json.decode(response.body) as Map<String, dynamic>;
+      print(networkData);
 
       networkData.forEach((key, value) {
         emptyCart.insert(
