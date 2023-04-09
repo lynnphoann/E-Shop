@@ -16,73 +16,77 @@ class LogInOutScreen extends StatefulWidget {
 
 class _LogInOutScreenState extends State<LogInOutScreen> {
   bool _isLoading = true;
+  bool get switchForm {
+    return ModalRoute.of(context)!.settings.arguments as bool;
+  }
+
+  Map<String, String> _authData = {
+    'email': '',
+    'password': '',
+  };
+  final _passwordController = TextEditingController();
+  final _FormKey = GlobalKey<FormState>();
+
+  void _showDialog(String message) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('An Error Occurred!'),
+          content: Text(message),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Okay'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            )
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _submit() async {
+    if (!_FormKey.currentState!.validate()) {
+      print("vaild");
+      return;
+    }
+    _FormKey.currentState!.save();
+    setState(() {
+      _isLoading = false;
+    });
+    try {
+      if (switchForm) {
+        await Provider.of<Auth>(context, listen: false)
+            .signUp(_authData["email"]!, _authData["password"]!);
+      } else {
+        await Provider.of<Auth>(context, listen: false)
+            .signIn(_authData["email"]!, _authData["password"]!);
+      }
+    } catch (error) {
+      var errorMessage = 'Could not authenticate you. Please try again later.';
+      if (error.toString().contains('EMAIL_EXISTS')) {
+        errorMessage = 'This email address is already in use.';
+      } else if (error.toString().contains('INVALID_EMAIL')) {
+        errorMessage = 'This is not a valid email address';
+      } else if (error.toString().contains('WEAK_PASSWORD')) {
+        errorMessage = 'This password is too weak.';
+      } else if (error.toString().contains('EMAIL_NOT_FOUND')) {
+        errorMessage = 'Could not find a user with that email.';
+      } else if (error.toString().contains('INVALID_PASSWORD')) {
+        errorMessage = 'Invalid password.';
+      }
+      _showDialog(errorMessage);
+    }
+    setState(() {
+      _isLoading = true;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    final switchForm = ModalRoute.of(context)!.settings.arguments as bool;
-
-    Map<String, String> _authData = {
-      'email': '',
-      'password': '',
-    };
-    final _passwordController = TextEditingController();
-    final _FormKey = GlobalKey<FormState>();
-
-    void _showDialog(String message) {
-      showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: Text('An Error Occurred!'),
-            content: Text(message),
-            actions: <Widget>[
-              TextButton(
-                child: Text('Okay'),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              )
-            ],
-          );
-        },
-      );
-    }
-
-    Future<void> _submit() async {
-      if (!_FormKey.currentState!.validate()) {
-        // Invalid!
-        return;
-      }
-      _FormKey.currentState!.save();
-
-      try {
-        if (switchForm) {
-          await Provider.of<Auth>(context, listen: false)
-              .signUp(_authData["email"]!, _authData["password"]!)
-              .then((value) => Navigator.of(context)
-                  .pushReplacementNamed(ProductOverviewScreen.routeName));
-        } else {
-          await Provider.of<Auth>(context, listen: false)
-              .signIn(_authData["email"]!, _authData["password"]!)
-              .then((value) => Navigator.of(context)
-                  .pushReplacementNamed(ProductOverviewScreen.routeName));
-        }
-      } catch (error) {
-        var errorMessage =
-            'Could not authenticate you. Please try again later.';
-        if (error.toString().contains('EMAIL_EXISTS')) {
-          errorMessage = 'This email address is already in use.';
-        } else if (error.toString().contains('INVALID_EMAIL')) {
-          errorMessage = 'This is not a valid email address';
-        } else if (error.toString().contains('WEAK_PASSWORD')) {
-          errorMessage = 'This password is too weak.';
-        } else if (error.toString().contains('EMAIL_NOT_FOUND')) {
-          errorMessage = 'Could not find a user with that email.';
-        } else if (error.toString().contains('INVALID_PASSWORD')) {
-          errorMessage = 'Invalid password.';
-        }
-        _showDialog(errorMessage);
-      }
-    }
+    // final switchForm = ModalRoute.of(context)!.settings.arguments as bool;
 
     return Scaffold(
       appBar: AppBar(
@@ -175,9 +179,6 @@ class _LogInOutScreenState extends State<LogInOutScreen> {
                   child: ElevatedButton(
                     onPressed: () {
                       _submit();
-                      setState(() {
-                        _isLoading = false;
-                      });
                     },
                     style: ElevatedButton.styleFrom(
                       elevation: 5,
@@ -189,10 +190,10 @@ class _LogInOutScreenState extends State<LogInOutScreen> {
                     ),
                     child: _isLoading
                         ? Text(switchForm ? "Create" : "Confirm")
-                        : SizedBox(
+                        : const SizedBox(
                             height: 20,
                             width: 20,
-                            child: const CircularProgressIndicator(
+                            child: CircularProgressIndicator(
                                 color: Colors.greenAccent)),
                   ),
                 )
