@@ -60,9 +60,11 @@ class _LogInOutScreenState extends State<LogInOutScreen> {
       if (switchForm) {
         await Provider.of<Auth>(context, listen: false)
             .signUp(_authData["email"]!, _authData["password"]!);
+        Navigator.of(context).pop();
       } else {
         await Provider.of<Auth>(context, listen: false)
             .signIn(_authData["email"]!, _authData["password"]!);
+        Navigator.of(context).pop();
       }
     } catch (error) {
       var errorMessage = 'Could not authenticate you. Please try again later.';

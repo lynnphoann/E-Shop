@@ -5,7 +5,6 @@ import 'package:eshop/Providers/Products.dart';
 import 'package:eshop/Screens/LogInOutScreen.dart';
 import 'package:eshop/Screens/authScreen.dart';
 import 'package:eshop/Screens/cartScreen.dart';
-import 'package:eshop/Screens/dummyScreen.dart';
 import 'package:eshop/Screens/editProductScreen.dart';
 import 'package:eshop/Screens/orderScreen.dart';
 import 'package:eshop/Screens/productDetails.dart';

@@ -52,7 +52,7 @@ class Auth with ChangeNotifier {
           .add(Duration(seconds: int.parse(responseData['expiresIn'])));
       notifyListeners();
 
-      // logOut();
+      autoLogOut();
     } catch (error) {
       rethrow;
     }
@@ -91,6 +91,6 @@ class Auth with ChangeNotifier {
       _authTimer!.cancel();
     }
     final ExpTime = _expirtDate!.difference(DateTime.now()).inSeconds;
-    _authTimer = Timer(Duration(seconds: 5), logOut);
+    _authTimer = Timer(Duration(seconds: ExpTime), logOut);
   }
 }
