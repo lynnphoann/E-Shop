@@ -9,6 +9,7 @@ import 'package:eshop/Screens/editProductScreen.dart';
 import 'package:eshop/Screens/orderScreen.dart';
 import 'package:eshop/Screens/productDetails.dart';
 import 'package:eshop/Screens/productOverview.dart';
+import 'package:eshop/Screens/splashScreen.dart';
 import 'package:eshop/Screens/userProductScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -58,7 +59,15 @@ class MyApp extends StatelessWidget {
                 // ignore: deprecated_member_use
                 accentColor: Colors.deepOrange,
                 fontFamily: 'Lato'),
-            home: AuthData.isAuth ? ProductOverviewScreen() : AuthScreen(),
+            home: AuthData.isAuth
+                ? ProductOverviewScreen()
+                : FutureBuilder(
+                    future: AuthData.tryAutoLogIn(),
+                    builder: (context, snapshot) =>
+                        snapshot.connectionState == ConnectionState.waiting
+                            ? SplashScreen()
+                            : AuthScreen(),
+                  ),
             routes: {
               ProductDetailsScreen.routeName: (context) =>
                   ProductDetailsScreen(),
@@ -66,9 +75,6 @@ class MyApp extends StatelessWidget {
               OrderScreen.routename: (context) => OrderScreen(),
               UserProductScreen.routename: (context) => UserProductScreen(),
               EditProductScreen.routename: (context) => EditProductScreen(),
-              LogInOutScreen.routeName: (context) => LogInOutScreen(),
-              // ProductOverviewScreen.routeName: (context) =>
-              //     ProductOverviewScreen(),
               AuthScreen.routeName: (context) => AuthScreen(),
             },
           ),
