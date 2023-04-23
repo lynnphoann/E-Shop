@@ -21,6 +21,10 @@ class _ProductOverviewScreenState extends State<ProductOverviewScreen> {
   bool _loadingScreen = true;
   bool _emptyListSwitch = true;
 
+  Future refreshIndicator() {
+    return Provider.of<Products>(context, listen: false).fetchAndSet();
+  }
+
   @override
   void initState() {
     Future.delayed(Duration.zero, () async {
@@ -84,18 +88,21 @@ class _ProductOverviewScreenState extends State<ProductOverviewScreen> {
         ],
       ),
       drawer: const AppDrawer(),
-      body: _loadingScreen
-          ? Center(
-              child: CircularProgressIndicator(),
-            )
-          : _emptyListSwitch
-              ? Product_grids(favOrNot: _favOrNot)
-              : const Center(
-                  child: Text(
-                    "There is No Product",
-                    style: TextStyle(fontSize: 30),
+      body: RefreshIndicator(
+        onRefresh: refreshIndicator,
+        child: _loadingScreen
+            ? Center(
+                child: CircularProgressIndicator(),
+              )
+            : _emptyListSwitch
+                ? Product_grids(favOrNot: _favOrNot)
+                : const Center(
+                    child: Text(
+                      "There is No Product",
+                      style: TextStyle(fontSize: 30),
+                    ),
                   ),
-                ),
+      ),
     );
   }
 }
