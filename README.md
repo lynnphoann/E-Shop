@@ -1,16 +1,5 @@
 # eshop
 
-A new Flutter project.
+This is an e-commerce application. The primary focus of this demo is on backend development and error handling, utilizing the Firebase Realtime Database and Authentication system.
 
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+これは EShop と言う電子商取引アプリです。このアプリは主に backend と エラー処理を集中して、 Firebase Realtime Database と Authentication system を利用して作ったアプリです。
